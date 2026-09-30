@@ -52,7 +52,7 @@ export default async function MonitoramentoPage() {
         <form action={runHealthChecksNow}>
           <button
             type="submit"
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
+            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-500"
           >
             Rodar verificação agora
           </button>
@@ -134,35 +134,35 @@ export default async function MonitoramentoPage() {
                 <th className="px-4 py-2 text-left font-medium text-slate-500">Contratante</th>
                 <th className="px-4 py-2 text-left font-medium text-slate-500">Mensagem</th>
                 <th className="px-4 py-2 text-left font-medium text-slate-500">Quando</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {(recentEvents ?? []).map((ev) => (
-              <tr key={ev.id}>
-                <td className="px-4 py-2">
-                  <Badge tone={severityTone(ev.severity)}>{severityLabel(ev.severity)}</Badge>
-                </td>
-                <td className="px-4 py-2 text-slate-600">{ev.source}</td>
-                <td className="px-4 py-2 text-slate-600">
-                  {(ev as unknown as { tenants?: { name: string } | null }).tenants?.name ??
-                    (ev.tenant_id ? tenantsById.get(ev.tenant_id) ?? "—" : "—")}
-                </td>
-                <td className="px-4 py-2 text-slate-600">{ev.message}</td>
-                <td className="px-4 py-2 text-slate-400">
-                  {new Date(ev.created_at).toLocaleString("pt-BR")}
-                </td>
               </tr>
-            ))}
-            {(recentEvents ?? []).length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-slate-500">
-                  Nenhum evento registrado ainda.
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {(recentEvents ?? []).map((ev) => (
+                <tr key={ev.id}>
+                  <td className="px-4 py-2">
+                    <Badge tone={severityTone(ev.severity)}>{severityLabel(ev.severity)}</Badge>
+                  </td>
+                  <td className="px-4 py-2 text-slate-600">{ev.source}</td>
+                  <td className="px-4 py-2 text-slate-600">
+                    {(ev as unknown as { tenants?: { name: string } | null }).tenants?.name ??
+                      (ev.tenant_id ? tenantsById.get(ev.tenant_id) ?? "—" : "—")}
+                  </td>
+                  <td className="px-4 py-2 text-slate-600">{ev.message}</td>
+                  <td className="px-4 py-2 text-slate-400">
+                    {new Date(ev.created_at).toLocaleString("pt-BR")}
+                  </td>
+                </tr>
+              ))}
+              {(recentEvents ?? []).length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-slate-500">
+                    Nenhum evento registrado ainda.
                 </td>
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
-      </div>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
   );

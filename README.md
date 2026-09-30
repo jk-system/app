@@ -138,3 +138,8 @@ git branch -M main
 git remote add origin https://github.com/jk-system/app.git
 git push -u origin main
 ```
+
+
+## Deploy
+
+Central Admin publicada na Vercel (30/09/2026) — projeto `jk-central-admin`.

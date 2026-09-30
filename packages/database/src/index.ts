@@ -57,6 +57,10 @@ export type Tenant = {
   status: "active" | "suspended" | "cancelled";
   created_at: string;
   updated_at: string;
+  /** Segredo para o sistema do proprio contratante chamar /api/integracao/*. Ver migration 0004. */
+  integration_secret: string;
+  /** Ultimo heartbeat recebido via /api/integracao/heartbeat. Null = nunca recebido. */
+  last_heartbeat_at: string | null;
 };
 
 export type UserTenantRole = "owner" | "manager" | "staff";

@@ -264,21 +264,29 @@ do $$
 begin
   create extension if not exists pg_cron;
 exception when others then
-  raise notice 'pg_cron nao pode ser habilitado automaticamente (%). Habilite manualmente em Database > Extensions se quiser checagens automaticas.';
+  raise notice 'pg_cron nao pode ser habilitado automaticamente (%). Habilite manualmente em Database > Extensions se quiser checagens automaticas.', sqlerrm;
 end
 $$;
 
 do $$
 begin
   if exists (select 1 from pg_extension where extname = 'pg_cron') then
-    -- remove agendamento anterior com o mesmo nome, se existir, para manter a migration idempotente
-    delete from cron.job where jobname = 'jk_run_health_checks';
-    perform cron.schedule(
-      'jk_run_health_checks',
-      '*/5 * * * *',
-      $cron$select public.run_health_checks();$cron$
-    );
-    raise notice 'pg_cron habilitado: run_health_checks() agendado para rodar a cada 5 minutos.';
+    -- remove agendamento anterior com o mesmo nome, se existir, para manter a migration idempotente.
+    -- Envolto em BEGIN/EXCEPTION porque alguns planos/projetos Supabase habilitam a extensao
+    -- pg_cron mas nao concedem permissao de escrita em cron.job para o role usado no SQL Editor
+    -- (erro observado: "permission denied for table job"). Nesse caso a migration nao falha —
+    -- ela apenas avisa, e a verificacao continua disponivel manualmente (tela Monitoramento).
+    begin
+      delete from cron.job where jobname = 'jk_run_health_checks';
+      perform cron.schedule(
+        'jk_run_health_checks',
+        '*/5 * * * *',
+        $cron$select public.run_health_checks();$cron$
+      );
+      raise notice 'pg_cron habilitado: run_health_checks() agendado para rodar a cada 5 minutos.';
+    exception when others then
+      raise notice 'pg_cron esta instalado mas sem permissao suficiente neste plano (%). Habilite/agende manualmente em Database > Extensions ou via suporte Supabase. As checagens continuam disponiveis manualmente pela tela Monitoramento.', sqlerrm;
+    end;
   else
     raise notice 'pg_cron nao disponivel neste projeto — checagens automaticas nao agendadas. Rode manualmente pela tela Monitoramento ou habilite a extensao e rode esta migration novamente.';
   end if;

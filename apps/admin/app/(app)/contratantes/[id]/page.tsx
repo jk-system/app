@@ -10,9 +10,18 @@ import {
   severityTone,
   severityLabel,
 } from "@/components/Badge";
-import { setTenantStatus, toggleTenantModule, setTenantSubscription } from "../actions";
+import {
+  setTenantStatus,
+  toggleTenantModule,
+  setTenantSubscription,
+  regenerateIntegrationSecret,
+} from "../actions";
 
 export const dynamic = "force-dynamic";
+
+// URL pública e fixa da Central Admin em produção — usada só para montar os
+// exemplos de endpoint mostrados nesta tela (não afeta nenhuma chamada real).
+const INTEGRATION_BASE_URL = "https://jk-central-admin.vercel.app";
 
 export default async function ContratanteDetailPage({
   params,
@@ -117,6 +126,54 @@ export default async function ContratanteDetailPage({
             </button>
           </form>
         </div>
+      </section>
+
+      {/* Integração externa */}
+      <section className="mb-6 rounded-xl border border-slate-200 bg-white p-5">
+        <h3 className="mb-1 text-sm font-semibold text-slate-900">Integração externa</h3>
+        <p className="mb-3 text-xs text-slate-500">
+          Segredo usado pelo próprio sistema deste contratante (ex.: o sistema atual da Guitart)
+          para consultar o status e enviar heartbeats à Central Admin — sem dar acesso a nenhum
+          banco de dados.
+        </p>
+        <div className="space-y-2 text-xs">
+          <div>
+            <span className="font-medium text-slate-600">Segredo (header X-Tenant-Secret):</span>{" "}
+            <code className="rounded bg-slate-100 px-2 py-1 font-mono text-slate-800">
+              {tenant.integration_secret}
+            </code>
+          </div>
+          <div>
+            <span className="font-medium text-slate-600">Consultar status:</span>{" "}
+            <code className="rounded bg-slate-100 px-2 py-1 font-mono text-slate-800">
+              GET {INTEGRATION_BASE_URL}/api/integracao/status?slug={tenant.slug}
+            </code>
+          </div>
+          <div>
+            <span className="font-medium text-slate-600">Enviar heartbeat:</span>{" "}
+            <code className="rounded bg-slate-100 px-2 py-1 font-mono text-slate-800">
+              POST {INTEGRATION_BASE_URL}/api/integracao/heartbeat
+            </code>
+            <span className="ml-1 text-slate-500">
+              — body JSON com <code>slug</code>, <code>status</code> (ok/warning/critical) e{" "}
+              <code>message</code>
+            </span>
+          </div>
+          <div>
+            <span className="font-medium text-slate-600">Último heartbeat:</span>{" "}
+            {tenant.last_heartbeat_at
+              ? new Date(tenant.last_heartbeat_at).toLocaleString("pt-BR")
+              : "nunca recebido"}
+          </div>
+        </div>
+        <form action={regenerateIntegrationSecret.bind(null, tenant.id)} className="mt-3">
+          <button
+            type="submit"
+            className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100"
+          >
+            Gerar novo segredo (invalida o atual)
+          </button>
+        </form>
       </section>
 
       {/* Módulos */}

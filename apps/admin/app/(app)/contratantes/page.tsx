@@ -21,7 +21,7 @@ export default async function ContratantesPage() {
         </div>
         <Link
           href="/contratantes/novo"
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500"
+          className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-500"
         >
           + Novo contratante
         </Link>
@@ -56,7 +56,7 @@ export default async function ContratantesPage() {
                   <td className="px-4 py-3">
                     <Link
                       href={`/contratantes/${tenant.id}`}
-                      className="font-medium text-slate-900 hover:text-indigo-600"
+                      className="font-medium text-slate-900 hover:text-brand-600"
                     >
                       {tenant.name}
                     </Link>

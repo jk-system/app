@@ -86,7 +86,7 @@ export default async function PlanosPage() {
           <div className="sm:col-span-4">
             <button
               type="submit"
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
+              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-500"
             >
               Criar plano
             </button>

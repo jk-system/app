@@ -8,6 +8,18 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* JK System — azul elétrico da marca (extraído do logo) */
+  --color-brand-50: #eef5ff;
+  --color-brand-100: #dce9ff;
+  --color-brand-200: #b3d1ff;
+  --color-brand-300: #80b3ff;
+  --color-brand-400: #4f91ff;
+  --color-brand-500: #2f7fff;
+  --color-brand-600: #1f66f0;
+  --color-brand-700: #1a52c2;
+  --color-brand-800: #163f94;
+  --color-brand-900: #0f2c6b;
 }
 
 @media (prefers-color-scheme: dark) {

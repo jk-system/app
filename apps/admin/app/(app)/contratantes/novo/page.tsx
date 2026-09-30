@@ -24,7 +24,7 @@ export default function NovoContratantePage() {
             id="name"
             name="name"
             required
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500"
             placeholder="Ex.: Guitart & Co."
           />
         </div>
@@ -36,7 +36,7 @@ export default function NovoContratantePage() {
           <input
             id="slug"
             name="slug"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500"
             placeholder="Deixe em branco para gerar a partir do nome"
           />
           <p className="mt-1 text-xs text-slate-400">
@@ -47,7 +47,7 @@ export default function NovoContratantePage() {
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500"
+          className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-500"
         >
           Criar contratante
         </button>

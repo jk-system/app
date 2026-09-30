@@ -1,5 +1,6 @@
 "use server";
 
+import crypto from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase-admin";
@@ -154,6 +155,37 @@ export async function setTenantSubscription(tenantId: string, formData: FormData
     severity: "info",
     source: "central_admin",
     message: `Assinatura do contratante atualizada (plano/${status}).`,
+    tenantId,
+  });
+
+  revalidatePath(`/contratantes/${tenantId}`);
+}
+
+/**
+ * Gera um novo segredo de integração externa (tenants.integration_secret) e
+ * invalida o anterior. Usado quando o contratante opera um sistema próprio
+ * (ex.: o sistema atual da Guitart) que consulta GET /api/integracao/status e
+ * envia POST /api/integracao/heartbeat autenticado por esse segredo — ver
+ * migration 0004_tenant_integration_api.sql para o desenho completo.
+ */
+export async function regenerateIntegrationSecret(tenantId: string) {
+  const secret = crypto.randomBytes(24).toString("hex");
+
+  const { data: tenant, error } = await supabaseAdmin
+    .from("tenants")
+    .update({ integration_secret: secret, updated_at: new Date().toISOString() })
+    .eq("id", tenantId)
+    .select("name")
+    .single();
+
+  if (error) {
+    throw new Error(`Erro ao gerar novo segredo de integração: ${error.message}`);
+  }
+
+  await logSystemEvent(supabaseAdmin, {
+    severity: "warning",
+    source: "central_admin",
+    message: `Segredo de integração do contratante "${tenant.name}" foi regenerado — a integração externa antiga para de funcionar até o sistema do contratante ser atualizado com o novo valor.`,
     tenantId,
   });
 
